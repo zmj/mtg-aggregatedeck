@@ -1,0 +1,33 @@
+1 Atarka's Command
+1 Roast
+2 Deathmist Raptor
+1 Dragonlord Atarka
+3 Draconic Roar
+4 Thunderbreak Regent
+2 Haven of the Spirit Dragon
+2 Rugged Highlands
+4 Rattleclaw Mystic
+3 Crater's Claws
+2 Ashcloud Phoenix
+2 Mana Confluence
+4 Temple of Abandon
+1 Boon Satyr
+2 Xenagos, the Reveler
+4 Stormbreath Dragon
+4 Elvish Mystic
+4 Wooded Foothills
+6 Forest
+3 Mountain
+1 Arc Lightning
+4 Goblin Rabblemaster
+
+Sideboard
+2 Roast
+1 Dragonlord Atarka
+3 Outpost Siege
+2 Hornet Nest
+1 Scouring Sands
+1 Boon Satyr
+3 Destructive Revelry
+2 Arc Lightning
+

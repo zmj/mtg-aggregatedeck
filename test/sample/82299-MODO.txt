@@ -1,0 +1,29 @@
+2 Roast
+4 Deathmist Raptor
+3 Draconic Roar
+2 Haven of the Spirit Dragon
+4 Thunderbreak Regent
+3 Ashcloud Phoenix
+2 Rugged Highlands
+4 Rattleclaw Mystic
+2 Heir of the Wilds
+3 Crater's Claws
+2 Mana Confluence
+4 Stormbreath Dragon
+4 Temple of Abandon
+4 Elvish Mystic
+4 Wooded Foothills
+4 Mountain
+5 Forest
+4 Goblin Rabblemaster
+
+Sideboard
+1 Roast
+2 Wild Slash
+1 Barrage of Boulders
+3 Hornet Nest
+1 Harness by Force
+3 Xenagos, the Reveler
+3 Destructive Revelry
+1 Plummet
+
