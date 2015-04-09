@@ -7,10 +7,14 @@ import "io/ioutil"
 import "strings"
 
 func respond(w http.ResponseWriter, decklists []string) {
-	decks := make([]Deck, len(decklists))
-	for _,decklist := range decklists {
-		deck := NewDeck(strings.Split(decklist, "\n"))
-		decks = append(decks, deck)
+	decks := make([]*Deck, len(decklists))
+	for i,decklist := range decklists {
+		deck, err := NewDeck(strings.Split(decklist, "\n"))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		decks[i] = deck
 	}
 	result := aggregate(decks)
 	io.WriteString(w, result.String())
@@ -37,8 +41,8 @@ func handle(w http.ResponseWriter, r *http.Request) {
 			
 			content, err := ioutil.ReadAll(file)
 			if err != nil {
-				fmt.Println("err reading file %s", err.Error())
-				continue
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
 			}
 			decklists = append(decklists, string(content))
 		}		
