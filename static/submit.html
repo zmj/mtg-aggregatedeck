@@ -1,14 +1,17 @@
 <html>
 	<head>
-	
+		<title>Metadeck</title>
 	</head>
 	<body>
-		<h1>Deck Aggregator</h1>
+		<h1>Metadeck Calculator</h1>
 		
 		<p>An implementation of Frank Karsten's <a href="http://www.channelfireball.com/articles/magic-math-a-new-way-to-determine-an-aggregate-deck-list-rg-dragons/" target="_blank">deck aggregation algorithm</a>.</p>
 		
-		<p>Select decklist files:</p>
-		<input type="file" multiple>
+		<form method="POST" enctype="multipart/form-data">
+			<p>Select decklist files:
+			<input type="file" required="required" multiple></p>
+			<input type="submit" value="Run the numbers">
+		</form>
 		<p>Feedback? Problems? Contact me: <a href="http://twitter.com/zmj" target="_blank">@zmj</a></p>
 	</body>
 </html>
