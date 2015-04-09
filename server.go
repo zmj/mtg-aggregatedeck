@@ -4,8 +4,17 @@ import "fmt"
 import "net/http"
 import "io"
 import "io/ioutil"
-//import "net/url"
-//import "mime/multipart"
+import "strings"
+
+func respond(w http.ResponseWriter, decklists []string) {
+	decks := make([]Deck, len(decklists))
+	for _,decklist := range decklists {
+		deck := NewDeck(strings.Split(decklist, "\n"))
+		decks = append(decks, deck)
+	}
+	result := aggregate(decks)
+	io.WriteString(w, result.String())
+}
 
 func handle(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
@@ -16,6 +25,7 @@ func handle(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		decklists := make([]string, 0)
 		for {
 			file, err := files.NextPart()
 			if err == io.EOF {
@@ -30,9 +40,9 @@ func handle(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("err reading file %s", err.Error())
 				continue
 			}
-			fmt.Println(file.FileName())
-			fmt.Println(string(content))
-		}
+			decklists = append(decklists, string(content))
+		}		
+		respond(w, decklists)
 	} else {
 		fmt.Println(r.Method)
 	}
