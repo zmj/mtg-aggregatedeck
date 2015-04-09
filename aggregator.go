@@ -31,24 +31,21 @@ func NewCard(raw string) (Card,error) {
 func NewDeck(raw []string) (*Deck,error) {
 	maindeck := make([]Card, 0)
 	sideboard := make([]Card, 0)
-	inSideboard := false
+	count := 0
 	for _,line := range raw {
 		line = strings.TrimSpace(line)
-		if len(line) == 0 {
-			continue
-		}
-		if line == "Sideboard" {
-			inSideboard = true
+		if len(line) == 0 || line=="Sideboard" {
 			continue
 		}
 		card, err := NewCard(line)
 		if err != nil {
 			return nil, err
 		}
-		if inSideboard {
+		if count >= 60 {
 			sideboard = append(sideboard, card)
 		} else {
 			maindeck = append(maindeck, card)
+			count += card.quantity
 		}
 	}
 	return &Deck{ maindeck: maindeck, sideboard: sideboard }, nil
@@ -59,7 +56,7 @@ func (deck *Deck) String() string {
 }
 
 func aggregate(decks []*Deck) *Deck {
-	for _,card := range decks[0].maindeck {
+	for _,card := range decks[0].sideboard {
 		fmt.Printf("%d %s\n", card.quantity, card.name)
 	}
 	return decks[0]

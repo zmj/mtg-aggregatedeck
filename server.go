@@ -53,7 +53,6 @@ func handle(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	fmt.Println("Hello world")
 	appPrefix := "metadeck"
 	http.HandleFunc(fmt.Sprintf("/%s/", appPrefix), handle)	
 	staticPath := fmt.Sprintf("/%s/static/", appPrefix)
