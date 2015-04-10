@@ -6,6 +6,7 @@ import "errors"
 import "strconv"
 import "strings"
 import "sort"
+import "bytes"
 
 type Card struct {
 	name string
@@ -55,7 +56,15 @@ func NewDeck(raw []string) (*Deck,error) {
 }
 	
 func (deck *Deck) String() string {
-	return "quack"
+	s := bytes.Buffer{}
+	for _,c := range deck.maindeck {
+		s.WriteString(fmt.Sprintf("%d %s\n", c.quantity, c.name))
+	}
+	s.WriteString("\nSideboard\n")
+	for _,c := range deck.sideboard {
+		s.WriteString(fmt.Sprintf("%d %s\n", c.quantity, c.name))
+	}
+	return s.String()
 }
 
 func aggregate(decks []*Deck) *Deck {
@@ -66,17 +75,14 @@ func aggregate(decks []*Deck) *Deck {
 		sideboards[i] = deck.sideboard
 	}
 	deck := &Deck { maindeck: agg(maindecks, maindecksize), sideboard: agg(sideboards, sideboardsize) }
-	for _,c := range deck.maindeck {
-		fmt.Printf("%s %d\n", c.name, c.quantity)
-	}
 	return deck
 }
 
 type Metacard struct {
 	name string
-	instance int	
-	total int
-	count int
+	instance int // nth copy of card
+	total int // total # of card played in all decklists
+	count int // # of nth copy in al decklists
 }
 
 func agg(cardlists [][]*Card, decksize int) []*Card {
@@ -100,9 +106,6 @@ func agg(cardlists [][]*Card, decksize int) []*Card {
 		md.cards = append(md.cards, mc)
 	}
 	sort.Sort(md)
-	for i,mc := range md.cards {
-		fmt.Printf("\t%d %d: %s %d %d\n", i, mc.count, mc.name, mc.instance, mc.total)
-	}
 	cards := make([]*Card, 0)
 	for i:=0; i<decksize; i+=1 {
 		card := md.cards[i]
