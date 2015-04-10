@@ -1,71 +1,9 @@
 package main
 
-import "regexp"
-import "fmt"
-import "errors"
-import "strconv"
-import "strings"
 import "sort"
-import "bytes"
 
-type Card struct {
-	name string
-	quantity int
-}
-
-type Deck struct {
-	maindeck []*Card
-	sideboard []*Card
-}
-
-var linePattern = regexp.MustCompile(`^(\d+) (.+)$`)
 var maindecksize = 60
 var sideboardsize = 15
-
-func NewCard(raw string) (*Card,error) {
-	segments := linePattern.FindStringSubmatch(raw)
-	if len(segments) == 3 {
-		count,_ := strconv.Atoi(segments[1])
-		return &Card{ name:segments[2], quantity:count }, nil
-	} else {
-		return &Card{}, errors.New(fmt.Sprintf("Failed to parse line '%s'", raw))
-	}
-}
-
-func NewDeck(raw []string) (*Deck,error) {
-	maindeck := make([]*Card, 0)
-	sideboard := make([]*Card, 0)
-	count := 0
-	for _,line := range raw {
-		line = strings.TrimSpace(line)
-		if len(line) == 0 || line=="Sideboard" {
-			continue
-		}
-		card, err := NewCard(line)
-		if err != nil {
-			return nil, err
-		}
-		if count >= maindecksize {
-			sideboard = append(sideboard, card)
-		} else {
-			maindeck = append(maindeck, card)
-			count += card.quantity
-		}
-	}
-	return &Deck{ maindeck: maindeck, sideboard: sideboard }, nil
-}
-	
-func (deck *Deck) String() string {
-	s := bytes.Buffer{}
-	for _,c := range deck.maindeck {
-		s.WriteString(fmt.Sprintf("%d %s\n", c.quantity, c.name))
-	}
-	s.WriteString("\nSideboard\n")
-	for _,c := range deck.sideboard {
-		s.WriteString(fmt.Sprintf("%d %s\n", c.quantity, c.name))
-	}
-	return s.String()
-}
 
 func aggregate(decks []*Deck) *Deck {
 	maindecks := make([][]*Card, len(decks))
@@ -82,7 +20,7 @@ type Metacard struct {
 	name string
 	instance int // nth copy of card
 	total int // total # of card played in all decklists
-	count int // # of nth copy in al decklists
+	count int // # of nth copy in all decklists
 }
 
 func agg(cardlists [][]*Card, decksize int) []*Card {

@@ -12,6 +12,7 @@ func respond(w http.ResponseWriter, decklists []string) {
 		deck, err := NewDeck(strings.Split(decklist, "\n"))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			fmt.Printf("Deck parse error: %s\n", err.Error())
 			return
 		}
 		decks[i] = deck
@@ -37,8 +38,7 @@ func handle(w http.ResponseWriter, r *http.Request) {
 			}
 			if file.FileName() == "" {
 				continue
-			}
-			
+			}			
 			content, err := ioutil.ReadAll(file)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
