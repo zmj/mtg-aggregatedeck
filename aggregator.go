@@ -1,19 +1,28 @@
 package main
 
 import "sort"
+import "errors"
+import "fmt"
 
 var maindecksize = 60
 var sideboardsize = 15
 
-func aggregate(decks []*Deck) *Deck {
+func aggregate(decks []*Deck) (*Deck,error) {
 	maindecks := make([][]*Card, len(decks))
 	sideboards := make([][]*Card, len(decks))
 	for i,deck := range decks {
 		maindecks[i] = deck.maindeck
 		sideboards[i] = deck.sideboard
+	}	
+	maindeck, err := agg(maindecks, maindecksize)
+	if err != nil {
+		return nil, err
 	}
-	deck := &Deck { maindeck: agg(maindecks, maindecksize), sideboard: agg(sideboards, sideboardsize) }
-	return deck
+	sideboard, err := agg(sideboards, sideboardsize)
+	if err != nil {
+		return nil, err
+	}
+	return &Deck{ maindeck:maindeck, sideboard:sideboard }, nil
 }
 
 type Metacard struct {
@@ -23,7 +32,7 @@ type Metacard struct {
 	count int // # of nth copy in all decklists
 }
 
-func agg(cardlists [][]*Card, decksize int) []*Card {
+func agg(cardlists [][]*Card, decksize int) ([]*Card,error) {
 	metalist := map[Card]*Metacard{}
 	for _,list := range cardlists {
 		for _,card := range list {
@@ -43,23 +52,26 @@ func agg(cardlists [][]*Card, decksize int) []*Card {
 	for _,mc := range metalist {
 		md.cards = append(md.cards, mc)
 	}
+	if len(md.cards)<decksize {
+		return nil, errors.New(fmt.Sprintf("Cannot build %d card deck from %d cards", decksize, len(md.cards)))
+	}
 	sort.Sort(md)
 	cards := make([]*Card, 0)
 	for i:=0; i<decksize; i+=1 {
-		card := md.cards[i]
+		mc := md.cards[i]
 		found := false
-		for _,c := range cards {
-			if c.name == card.name {
-				c.quantity += 1
+		for _,card := range cards {
+			if card.name == mc.name {
+				card.quantity += 1
 				found = true
 				break
 			}
 		}
 		if !found {
-			cards = append(cards, &Card{ name: card.name, quantity: 1 })
+			cards = append(cards, &Card{ name: mc.name, quantity: 1 })
 		}
 	}
-	return cards
+	return cards, nil
 }
 
 type Metadeck struct {

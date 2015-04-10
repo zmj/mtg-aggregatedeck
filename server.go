@@ -17,7 +17,12 @@ func respond(w http.ResponseWriter, decklists []string) {
 		}
 		decks[i] = deck
 	}
-	result := aggregate(decks)
+	result,err := aggregate(decks)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		fmt.Printf("Aggregation error: %s\n", err.Error())
+		return
+	}
 	io.WriteString(w, result.String())
 }
 
