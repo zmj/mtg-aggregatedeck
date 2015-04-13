@@ -1,5 +1,7 @@
 package main
 
+import "io"
+import "io/ioutil"
 import "regexp"
 import "fmt"
 import "errors"
@@ -23,7 +25,7 @@ func NewCard(line string) (*Card,error) {
 	match := linePattern.FindStringSubmatch(line)
 	card := &Card{ }
 	if match==nil {
-		return card, errors.New(fmt.Sprintf("Failed to parse line '%v'", []byte(line)))
+		return card, errors.New(fmt.Sprintf("Failed to parse line '%s'", line))
 	}
 	for i,group := range linePattern.SubexpNames() {	
 		if group=="quantity" {
@@ -55,11 +57,15 @@ func ignoreDecklistLine(line string) bool {
 	return false	
 }
 
-func NewDeck(raw []string) (*Deck,error) {
+func NewDeck(r io.Reader) (*Deck,error) {
+	decklist, err := ioutil.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
 	maindeck := make([]*Card, 0)
 	sideboard := make([]*Card, 0)
-	count := 0
-	for _,line := range raw {
+	count := 0	
+	for _,line := range strings.Split(string(decklist), "\n") {
 		line = strings.TrimSpace(line)
 		if ignoreDecklistLine(line) {
 			continue

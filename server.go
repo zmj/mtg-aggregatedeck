@@ -3,27 +3,15 @@ package main
 import "fmt"
 import "net/http"
 import "io"
-import "io/ioutil"
-import "strings"
 
-func respond(w http.ResponseWriter, decklists []string) {
-	decks := make([]*Deck, len(decklists))
-	for i,decklist := range decklists {
-		deck, err := NewDeck(strings.Split(decklist, "\n"))
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			fmt.Printf("Deck parse error: %s\n", err.Error())
-			return
-		}
-		decks[i] = deck
-	}
-	result,err := aggregate(decks)
+func respond(w http.ResponseWriter, decks []*Deck) {
+	deck,err := aggregate(decks)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		fmt.Printf("Aggregation error: %s\n", err.Error())
 		return
 	}
-	io.WriteString(w, result.String())
+	io.WriteString(w, deck.String())
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
@@ -35,7 +23,7 @@ func handle(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		decklists := make([]string, 0)
+		decks := make([]*Deck, 0)
 		for {
 			file, err := files.NextPart()
 			if err == io.EOF {
@@ -44,16 +32,15 @@ func handle(w http.ResponseWriter, r *http.Request) {
 			if file.FileName() == "" {
 				continue
 			}			
-			content, err := ioutil.ReadAll(file)
-			if err != nil {
+			deck, err := NewDeck(file)
+			if err != nil {				
 				http.Error(w, err.Error(), http.StatusInternalServerError)
+				fmt.Printf("Deck parse error: %s\n", err.Error())
 				return
 			}
-			decklists = append(decklists, string(content))
+			decks = append(decks, deck)
 		}		
-		respond(w, decklists)
-	} else {
-		fmt.Println(r.Method)
+		respond(w, decks)
 	}
 }
 
