@@ -17,13 +17,13 @@ type Deck struct {
 	sideboard []*Card
 }
 
-var linePattern = regexp.MustCompile(`^(SB:\s+)?(?P<quantity>\d+) (\[.+\] )?(?P<name>.+)$`)
+var linePattern = regexp.MustCompile(`^[^0-9]*(?P<quantity>\d+) (\[.+\] )?(?P<name>.+)$`)
 
 func NewCard(line string) (*Card,error) {
 	match := linePattern.FindStringSubmatch(line)
 	card := &Card{ }
 	if match==nil {
-		return card, errors.New(fmt.Sprintf("Failed to parse line '%s'", line))
+		return card, errors.New(fmt.Sprintf("Failed to parse line '%v'", []byte(line)))
 	}
 	for i,group := range linePattern.SubexpNames() {	
 		if group=="quantity" {
@@ -36,10 +36,12 @@ func NewCard(line string) (*Card,error) {
 			card.name = match[i]
 		}
 	}
-	if len(card.name)>0 && card.quantity>0 {
-		return card, nil
+	if len(card.name)==0 {
+		return nil, errors.New(fmt.Sprintf("Could not parse card name from '%s'", line))
+	} else if card.quantity==0 {
+		return nil, errors.New(fmt.Sprintf("Could not parse card quantity from '%s'", line))
 	} else {
-		return card, errors.New(fmt.Sprintf("Failed to parse line '%s'", line))
+		return card, nil
 	}
 }
 
