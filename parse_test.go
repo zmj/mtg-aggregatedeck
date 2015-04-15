@@ -1,9 +1,9 @@
-package main 
+package main
 
 import (
-	"testing"
-	"os"
 	"errors"
+	"os"
+	"testing"
 )
 
 func TestScgDecklist(t *testing.T) {
@@ -19,7 +19,7 @@ func TestWotcDecklist(t *testing.T) {
 	_, err := ParseDecklist(filename)
 	if err != nil {
 		t.Error(err)
-	}	
+	}
 }
 
 func TestMwsDecklist(t *testing.T) {
@@ -31,7 +31,7 @@ func TestMwsDecklist(t *testing.T) {
 }
 
 func ParseDecklist(filename string) (*Deck, error) {
-	file, err := os.Open("sampledata/"+filename)
+	file, err := os.Open("sampledata/" + filename)
 	if err != nil {
 		return nil, err
 	}
@@ -39,17 +39,17 @@ func ParseDecklist(filename string) (*Deck, error) {
 	if err != nil {
 		return nil, err
 	}
-	if CountCards(deck.maindeck)<60 {
+	if CountCards(deck.maindeck) < 60 {
 		return nil, errors.New("Maindeck less than 60 cards")
-	} 
-	if CountCards(deck.sideboard)>15 {
+	}
+	if CountCards(deck.sideboard) > 15 {
 		return nil, errors.New("Sideboard more than 15 cards")
 	}
 	return deck, nil
 }
 
 func CountCards(deck []*Card) (count int) {
-	for _,c := range deck {
+	for _, c := range deck {
 		count += c.quantity
 	}
 	return count

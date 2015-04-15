@@ -10,37 +10,37 @@ import "strings"
 import "bytes"
 
 type Card struct {
-	name string
+	name     string
 	quantity int
 }
 
 type Deck struct {
-	maindeck []*Card
+	maindeck  []*Card
 	sideboard []*Card
 }
 
 var linePattern = regexp.MustCompile(`^[^0-9]*(?P<quantity>\d+) (\[.+\] )?(?P<name>.+)$`)
 
-func NewCard(line string) (*Card,error) {
+func NewCard(line string) (*Card, error) {
 	match := linePattern.FindStringSubmatch(line)
-	card := &Card{ }
-	if match==nil {
+	card := &Card{}
+	if match == nil {
 		return card, errors.New(fmt.Sprintf("Failed to parse line '%s'", line))
 	}
-	for i,group := range linePattern.SubexpNames() {	
-		if group=="quantity" {
+	for i, group := range linePattern.SubexpNames() {
+		if group == "quantity" {
 			quantity, err := strconv.Atoi(match[i])
 			if err != nil {
 				return card, err
 			}
 			card.quantity = quantity
-		} else if group=="name" {
+		} else if group == "name" {
 			card.name = match[i]
 		}
 	}
-	if len(card.name)==0 {
+	if len(card.name) == 0 {
 		return nil, errors.New(fmt.Sprintf("Could not parse card name from '%s'", line))
-	} else if card.quantity==0 {
+	} else if card.quantity == 0 {
 		return nil, errors.New(fmt.Sprintf("Could not parse card quantity from '%s'", line))
 	} else {
 		return card, nil
@@ -53,19 +53,19 @@ func ignoreDecklistLine(line string) bool {
 		strings.HasPrefix(line, "//") ||
 		strings.HasPrefix(line, "#") {
 		return true
-	} 
-	return false	
+	}
+	return false
 }
 
-func NewDeck(r io.Reader) (*Deck,error) {
+func NewDeck(r io.Reader) (*Deck, error) {
 	decklist, err := ioutil.ReadAll(r)
 	if err != nil {
 		return nil, err
 	}
 	maindeck := make([]*Card, 0)
 	sideboard := make([]*Card, 0)
-	count := 0	
-	for _,line := range strings.Split(string(decklist), "\n") {
+	count := 0
+	for _, line := range strings.Split(string(decklist), "\n") {
 		line = strings.TrimSpace(line)
 		if ignoreDecklistLine(line) {
 			continue
@@ -81,16 +81,16 @@ func NewDeck(r io.Reader) (*Deck,error) {
 			count += card.quantity
 		}
 	}
-	return &Deck{ maindeck: maindeck, sideboard: sideboard }, nil
+	return &Deck{maindeck: maindeck, sideboard: sideboard}, nil
 }
-	
+
 func (deck *Deck) String() string {
 	s := bytes.Buffer{}
-	for _,c := range deck.maindeck {
+	for _, c := range deck.maindeck {
 		s.WriteString(fmt.Sprintf("%d %s\n", c.quantity, c.name))
 	}
 	s.WriteString("\nSideboard\n")
-	for _,c := range deck.sideboard {
+	for _, c := range deck.sideboard {
 		s.WriteString(fmt.Sprintf("%d %s\n", c.quantity, c.name))
 	}
 	return s.String()
