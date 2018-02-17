@@ -44,10 +44,9 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func main() {
-	appPrefix := "metadeck"
+func run_server(bind string, appPrefix string) {
 	http.HandleFunc(fmt.Sprintf("/%s/", appPrefix), handle)
 	staticPath := fmt.Sprintf("/%s/static/", appPrefix)
 	http.Handle(staticPath, http.StripPrefix(staticPath, http.FileServer(http.Dir("static"))))
-	http.ListenAndServe(":8981", nil)
+	http.ListenAndServe(bind, nil)
 }
