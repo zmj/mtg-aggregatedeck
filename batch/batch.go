@@ -48,8 +48,8 @@ func batch(top_path string, output_path string, verbose bool) {
 	decks_processed := 0
 	aggregate_decks_created := 0
 
-	top_path = string.TrimRight(top_path, "/")
-	output_path = string.TrimRight(output_path, "/")
+	top_path = strings.TrimRight(top_path, "/")
+	output_path = strings.TrimRight(output_path, "/")
 
 	var deck_dir, deckname string
 	decks := make([]*Deck, 0)
