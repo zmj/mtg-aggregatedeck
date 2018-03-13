@@ -1,4 +1,4 @@
-package main
+package logic
 
 import (
 	"errors"
@@ -31,7 +31,7 @@ func TestMwsDecklist(t *testing.T) {
 }
 
 func ParseDecklist(filename string) (*Deck, error) {
-	file, err := os.Open("sampledata/" + filename)
+	file, err := os.Open("sample/" + filename)
 	if err != nil {
 		return nil, err
 	}

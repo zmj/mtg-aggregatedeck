@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/zmj/mtg-aggregatedeck/internal/logic"
 )
 
 func splitpath(path string) (string, string) {
@@ -20,14 +22,14 @@ func is_hidden_file(path string) bool {
 	return strings.HasPrefix(basename, ".")
 }
 
-func aggregate_to_file(decks []*Deck, deckname string, output_path string) {
-	var archetypical_deck *Deck
+func aggregate_to_file(decks []*logic.Deck, deckname string, output_path string) {
+	var archetypical_deck *logic.Deck
 	if len(decks) == 1 {
 		// trivially, a single deck's aggregate is itself
 		archetypical_deck = decks[0]
 	} else {
 		var err error
-		archetypical_deck, err = aggregate(decks)
+		archetypical_deck, err = logic.Aggregate(decks)
 		if err != nil {
 			log.Fatalln("Couldn't create archetype for", deckname+":", err)
 		}
@@ -48,11 +50,11 @@ func batch(top_path string, output_path string, verbose bool) {
 	decks_processed := 0
 	aggregate_decks_created := 0
 
-	top_path = string.TrimRight(top_path, "/")
-	output_path = string.TrimRight(output_path, "/")
+	top_path = strings.TrimRight(top_path, "/")
+	output_path = strings.TrimRight(output_path, "/")
 
 	var deck_dir, deckname string
-	decks := make([]*Deck, 0)
+	decks := make([]*logic.Deck, 0)
 
 	filepath.Walk(top_path, func(path string, info os.FileInfo, _ error) error {
 		if info.IsDir() {
@@ -83,7 +85,7 @@ func batch(top_path string, output_path string, verbose bool) {
 			}
 
 			// allocate structures to collect decks from this new folder
-			decks = make([]*Deck, 0)
+			decks = make([]*logic.Deck, 0)
 			deck_dir = dirname
 			deckname = strings.Replace(deck_dir[len(top_path)+1:], "/", "-", -1)
 			if verbose {
@@ -101,7 +103,7 @@ func batch(top_path string, output_path string, verbose bool) {
 		if err != nil {
 			log.Fatalln("Path open failed for deck", path+":", err)
 		}
-		deck, err := NewDeck(deckfile)
+		deck, err := logic.NewDeck(deckfile)
 		if err != nil {
 			log.Fatalln("Deck parsing failed for deck", path+":", err)
 		}
