@@ -5,7 +5,6 @@ import (
 	"log"
 )
 
-var batchmode = flag.Bool("batch", false, "Whether to run in batch mode (requires -decks and -out)")
 var deckpath = flag.String("decks", "", "(batch mode) A directory with subdirectories containing deck files")
 var outpath = flag.String("out", "", "(batch mode) Output directory for aggregated decks; will be created if it doesn't exist")
 var verbose = flag.Bool("v", false, "Give more verbose output")
