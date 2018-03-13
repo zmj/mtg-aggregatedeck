@@ -1,4 +1,4 @@
-package main
+package logic
 
 import "sort"
 import "errors"
@@ -7,7 +7,7 @@ import "fmt"
 var maindecksize = 60
 var sideboardsize = 15
 
-func aggregate(decks []*Deck) (*Deck, error) {
+func Aggregate(decks []*Deck) (*Deck, error) {
 	maindecks := make([][]*Card, len(decks))
 	sideboards := make([][]*Card, len(decks))
 	for i, deck := range decks {

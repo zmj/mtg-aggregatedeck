@@ -1,4 +1,4 @@
-package main
+package logic
 
 import "io"
 import "io/ioutil"
@@ -85,6 +85,9 @@ func NewDeck(r io.Reader) (*Deck, error) {
 }
 
 func (deck *Deck) String() string {
+	if deck == nil {
+		return ""
+	}
 	s := bytes.Buffer{}
 	for _, c := range deck.maindeck {
 		s.WriteString(fmt.Sprintf("%d %s\n", c.quantity, c.name))

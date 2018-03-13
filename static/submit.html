@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<title>Metadeck</title>
-		<link rel="stylesheet" type="text/css" href="static/submit.css">
+		<link rel="stylesheet" type="text/css" href="submit.css">
 	</head>
 	<body>
 		<h1>Metadeck Calculator</h1>
@@ -9,7 +9,7 @@
 		<div id="content">
 		<p>An implementation of Frank Karsten's <a href="http://www.channelfireball.com/articles/magic-math-a-new-way-to-determine-an-aggregate-deck-list-rg-dragons/" target="_blank">deck aggregation algorithm</a>.</p>
 		
-		<form method="POST" enctype="multipart/form-data">
+		<form method="POST" enctype="multipart/form-data" action="https://hne2iyoowc.execute-api.us-east-1.amazonaws.com/prod/mtg-aggregatedeck">
 			<p>Select decklist files:
 			<input type="file" name="decklists" class="fileinput" required="required" multiple></p>
 			<p><input type="submit" value="Run the numbers"></p>
